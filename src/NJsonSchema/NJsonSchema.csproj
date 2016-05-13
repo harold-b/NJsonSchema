@@ -2,6 +2,9 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <LibsDir>$(ProjectDir)..\..\..\..\Libs\$(Configuration)_NET</LibsDir>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7B7A2E32-E808-4A19-98B1-37E766580F8C}</ProjectGuid>
@@ -57,15 +60,22 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>../NJsonSchema.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <!--
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    -->
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(LibsDir)\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -112,7 +122,14 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <PropertyGroup>
+    <LibsDir>$(ProjectDir)..\..\..\..\Libs\$(Configuration)_NET</LibsDir>
+  </PropertyGroup>
+  <Target Name="AfterBuild">
+    <MakeDir Directories="$(LibsDir)" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).dll" DestinationFiles="$(LibsDir)\$(TargetName).dll" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(LibsDir)\$(TargetName).pdb" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).xml" DestinationFiles="$(LibsDir)\$(TargetName).xml" />
+  </Target>
 </Project>
